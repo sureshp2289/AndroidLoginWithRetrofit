@@ -219,7 +219,6 @@ public class LoginActivity extends AppCompatActivity {
                     String fname = mLoginObject.getProperties().getFirstname();
                     String lname = mLoginObject.getProperties().getLastname();
                 }
-//Suresh is god world
                 Toast.makeText(LoginActivity.this,returnedResponse, Toast.LENGTH_LONG).show();
 
 
