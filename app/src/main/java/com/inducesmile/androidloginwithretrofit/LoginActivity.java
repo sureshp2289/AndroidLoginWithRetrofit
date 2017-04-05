@@ -219,6 +219,7 @@ public class LoginActivity extends AppCompatActivity {
                     String fname = mLoginObject.getProperties().getFirstname();
                     String lname = mLoginObject.getProperties().getLastname();
                 }
+              //  Suresh
 
                 Toast.makeText(LoginActivity.this,returnedResponse, Toast.LENGTH_LONG).show();
 
