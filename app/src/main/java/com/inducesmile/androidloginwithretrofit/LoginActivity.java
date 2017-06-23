@@ -262,7 +262,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void login(final JsonObject jsonObject){
 
-        ApiInterface mApiService = this.getInterfaceService();
+        ApiInterface mApiService = LoginActivity.this.getInterfaceService();
         Call<UserLogin> call = mApiService.login("application/json;charset=UTF-8",jsonObject);
         call.enqueue(new Callback<UserLogin>() {
             @Override
@@ -295,7 +295,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void getfeeds(){
 
-        ApiInterface mApiService = this.getInterfaceService();
+        ApiInterface mApiService = LoginActivity.this.getInterfaceService();
         Call<JsonObject> call = mApiService.getfeeds(accestoken,email);
         call.enqueue(new Callback<JsonObject>() {
             @Override
