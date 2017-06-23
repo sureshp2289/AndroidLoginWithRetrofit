@@ -20,6 +20,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 
 import okhttp3.MediaType;
@@ -37,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private final String TAG = "LoginActivity";
 
-    public static final String BASE_URL ="http://start4me.com/";
+    public static final String BASE_URL ="https://polar-crag-10136.herokuapp.com";
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -49,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     View focusView = null;
     private String email;
     private String password;
+    private String accestoken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +104,9 @@ public class LoginActivity extends AppCompatActivity {
         if (mCancel) {
             focusView.requestFocus();
         } else {
-            showProfile(email, password);
+           // Updatepicture(email,password);
+
+            getfeeds();
         }
     }
 
@@ -107,7 +115,26 @@ public class LoginActivity extends AppCompatActivity {
         if (mCancel) {
             focusView.requestFocus();
         } else {
-            loginProcessWithRetrofit(email, password);
+           // loginProcessWithRetrofit(email, password);
+          /*  JSONObject jsonObject=new JSONObject();
+            JSONObject jsonObject1=new JSONObject();
+            try {
+               jsonObject1.put("email",email);
+                jsonObject1.put("password",password);
+                jsonObject.put("user",jsonObject1);*/
+
+               //
+                JsonObject postParam = new JsonObject();
+                JsonObject postParam1 = new JsonObject();
+                postParam.addProperty("email",email) ;
+                postParam.addProperty("password",password) ;
+               // postParam1.add("user",postParam);
+                Toast.makeText(LoginActivity.this,""+postParam.toString(),Toast.LENGTH_SHORT).show();
+            login(postParam);
+
+
+
+
         }
     }
 
@@ -189,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private ApiInterface getInterfaceService() {
+    public static ApiInterface getInterfaceService() {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -233,7 +260,72 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+    private void login(final JsonObject jsonObject){
 
+        ApiInterface mApiService = this.getInterfaceService();
+        Call<UserLogin> call = mApiService.login("application/json;charset=UTF-8",jsonObject);
+        call.enqueue(new Callback<UserLogin>() {
+            @Override
+            public void onResponse(Call<UserLogin> call, Response<UserLogin> response) {
+
+                UserLogin mLoginObject = response.body();
+
+           /*   *//*  String returnedResponse = mLoginObject.getError_msg();
+                boolean error=mLoginObject.getError();
+                if(!error) {
+                    String type = mLoginObject.getType();
+                    String uid = mLoginObject.getUid();
+                    String email = mLoginObject.getProperties().getEmail();
+                    String fname = mLoginObject.getProperties().getFirstname();
+                    String lname = mLoginObject.getProperties().getLastname();
+                }
+                //  Sur*//*esh is god*/
+                accestoken=mLoginObject.getData().getUser().getAccess_token();
+                Toast.makeText(LoginActivity.this,mLoginObject.getData().getUser().getAccess_token(), Toast.LENGTH_LONG).show();
+
+
+            }
+
+            @Override
+            public void onFailure(Call<UserLogin> call, Throwable t) {
+                call.cancel();
+                Toast.makeText(LoginActivity.this, "Please check your network connection and internet permission", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    private void getfeeds(){
+
+        ApiInterface mApiService = this.getInterfaceService();
+        Call<JsonObject> call = mApiService.getfeeds(accestoken,email);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+                JsonObject mLoginObject = response.body();
+
+           /*   *//*  String returnedResponse = mLoginObject.getError_msg();
+                boolean error=mLoginObject.getError();
+                if(!error) {
+                    String type = mLoginObject.getType();
+                    String uid = mLoginObject.getUid();
+                    String email = mLoginObject.getProperties().getEmail();
+                    String fname = mLoginObject.getProperties().getFirstname();
+                    String lname = mLoginObject.getProperties().getLastname();
+                }
+                //  Sur*//*esh is god*/
+
+                Toast.makeText(LoginActivity.this,mLoginObject.toString(), Toast.LENGTH_LONG).show();
+
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                call.cancel();
+                Toast.makeText(LoginActivity.this, "Please check your network connection and internet permission", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
     private void registrationProcessWithRetrofit(final String email, String password){
 
         ApiInterface mApiService = this.getInterfaceService();
@@ -270,7 +362,7 @@ public class LoginActivity extends AppCompatActivity {
        File profileimage=new File(sdcard,"ondemand.txt");
         ApiInterface mApiService = this.getInterfaceService();
         RequestBody method = RequestBody.create(MediaType.parse("text/plain"),"updateuserprofile");
-        RequestBody uid = RequestBody.create(MediaType.parse("text/plain"),"58b65ff7be6219.20589480");
+        RequestBody uid = RequestBody.create(MediaType.parse("text/plain"),"59251283704066.48148695");
         RequestBody firstname = RequestBody.create(MediaType.parse("text/plain"),"Suresh");
         RequestBody lastname = RequestBody.create(MediaType.parse("text/plain"),"p");
         RequestBody number = RequestBody.create(MediaType.parse("text/plain"),"7795170844");
@@ -315,7 +407,7 @@ public class LoginActivity extends AppCompatActivity {
                 boolean error=mLoginObject.getError();
                 if(!error) {
                     String type = mLoginObject.getUser().getType();
-                    Toast.makeText(LoginActivity.this,""+mLoginObject.getUser().getLat(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this,""+mLoginObject.getServices().get(0).getServiceprice(), Toast.LENGTH_LONG).show();
 
                 }
 

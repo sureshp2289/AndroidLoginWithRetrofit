@@ -1,14 +1,22 @@
 package com.inducesmile.androidloginwithretrofit;
 
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiInterface {
 
@@ -49,4 +57,15 @@ public interface ApiInterface {
             @Field("uid") String uid
 
     );
+    @Headers({"Accept:application/json"})
+    @POST("/users/sign_in")
+    Call<UserLogin> login(
+            @Header("Content-Type") String  str,
+            @Body JsonObject method);
+    @Headers({"Accept:application/json"})
+    @GET("/get_feeds")
+    Call<JsonObject> getfeeds(
+            @Header("X-ACCESS-TOKEN") String  accestoken,
+            @Header("X-USER-EMAIL") String  email
+            );
 }
